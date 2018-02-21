@@ -12,10 +12,15 @@ def load_cifar(cifar_folder='cifar-10'):
         'labels' : np.concatenate([batch[b'labels'] for batch in batches])
     }
 
-  batches = [unpickle('%s/data_batch_%d' % (cifar_folder,i)) for i in range(1, 6)]
-  train = merge(batches)
+  def normalize(batch):
+    batch['data'] = (batch['data'].astype('float64') - 128) / 128
+    return batch
+
+  batches = [unpickle('%s/data_batch_%d' % (cifar_folder,i))
+              for i in range(1, 6)]
+  train = normalize(merge(batches))
   # merge is used to purge the keys here
-  test = merge([unpickle('%s/test_batch' % cifar_folder)])  
+  test = normalize(merge([unpickle('%s/test_batch' % cifar_folder)]))
   return {
       'train' : train,
       'test' : test
