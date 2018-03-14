@@ -13,7 +13,9 @@ def load_cifar(cifar_folder='cifar-10'):
     }
 
   def normalize(batch):
-    batch['data'] = (batch['data'].astype('float64') - 128) / 128
+    data = batch['data'].astype('float64')
+    data = (data - np.mean(data)) / np.std(data)
+    batch['data'] = data
     return batch
 
   batches = [unpickle('%s/data_batch_%d' % (cifar_folder,i))
